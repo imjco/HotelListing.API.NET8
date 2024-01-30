@@ -1,16 +1,17 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets",
-      "connectionId": "VaultUri"
+    "apis1": {
+      "type": "apis"
     },
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:HotelListingDbConnectionString",
       "dynamicId": null
     },
-    "apis1": {
-      "type": "apis"
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri",
+      "dynamicId": null
     }
   }
 }

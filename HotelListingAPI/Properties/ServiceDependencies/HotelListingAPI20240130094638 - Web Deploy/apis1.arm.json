@@ -4,7 +4,7 @@
   "parameters": {
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "myresource",
+      "defaultValue": "DefaultResourceGroup-SEA",
       "metadata": {
         "_parameterType": "resourceGroup",
         "description": "Name of the resource group for the resource. It is recommended to put resources under same resource group for better tracking."
@@ -12,7 +12,7 @@
     },
     "resourceGroupLocation": {
       "type": "string",
-      "defaultValue": "eastus",
+      "defaultValue": "southeastasia",
       "metadata": {
         "_parameterType": "location",
         "description": "Location of the resource group. Resource groups could have different location than resources."
@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('echo-api', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('HotelListingAPI', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -49,17 +49,17 @@
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "skirt-apim",
+              "name": "HotelListingAPIapis",
               "type": "Microsoft.ApiManagement/service",
               "location": "[parameters('resourceLocation')]",
               "properties": {
-                "publisherEmail": "JELEOSTEPHENENRILE731@GMAIL.COM",
-                "publisherName": "imjcoOrg",
+                "publisherEmail": "jeleostephenenrile731@gmail.com",
+                "publisherName": "jeleo stephen enrile",
                 "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
                 "hostnameConfigurations": [
                   {
                     "type": "Proxy",
-                    "hostName": "skirt-apim.azure-api.net",
+                    "hostName": "hotellistingapiapis.azure-api.net",
                     "encodedCertificate": null,
                     "keyVaultId": null,
                     "certificatePassword": null,
@@ -68,21 +68,17 @@
                     "defaultSslBinding": true
                   }
                 ],
-                "publicIPAddresses": [
-                  "20.255.40.141"
-                ],
+                "publicIPAddresses": null,
                 "privateIPAddresses": null,
                 "additionalLocations": null,
                 "virtualNetworkConfiguration": null,
                 "customProperties": {
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "true",
-                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30": "true"
+                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "False",
+                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "False",
+                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "False",
+                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "False",
+                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "False",
+                  "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "False"
                 },
                 "virtualNetworkType": "None",
                 "certificates": null,
@@ -92,21 +88,21 @@
                 }
               },
               "sku": {
-                "name": "Developer",
-                "capacity": 1
+                "name": "Consumption",
+                "capacity": 0
               },
               "apiVersion": "2019-12-01"
             },
             {
               "type": "Microsoft.ApiManagement/service/apis",
-              "name": "skirt-apim/echo-api",
+              "name": "HotelListingAPIapis/HotelListingAPI",
               "properties": {
-                "displayName": "Echo API",
+                "displayName": "HotelListingAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
                 "apiRevision": "1",
                 "description": null,
                 "subscriptionRequired": true,
-                "serviceUrl": "http://echoapi.cloudapp.net/api",
-                "path": "echo",
+                "serviceUrl": "https://hotellistingapi20240130105227.azurewebsites.net",
+                "path": "",
                 "protocols": [
                   "https"
                 ],
@@ -122,7 +118,7 @@
               },
               "apiVersion": "2019-12-01",
               "dependsOn": [
-                "skirt-apim"
+                "HotelListingAPIapis"
               ]
             }
           ]
