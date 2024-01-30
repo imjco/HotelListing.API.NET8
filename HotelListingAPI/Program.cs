@@ -42,16 +42,26 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger(); 
+    //app.UseSwagger(); 
  
 
 
-    app.UseSwaggerUI();
-    //app.UseSwaggerUI(c =>
-    //{
-    //    c.SwaggerEndpoint("..swagger.json", "HotelListingAPI");
-        
-    //});
+    //app.UseSwaggerUI();
+
+//app.UseSwagger(c =>
+//{
+//    c.SerializeAsV2 = true;
+//});
+
+// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+// specifying the Swagger JSON endpoint.
+//app.UseSwaggerUI(c =>
+//{
+//    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Name");
+//});
+
+
+
 //}
 
 app.UseSerilogRequestLogging();
