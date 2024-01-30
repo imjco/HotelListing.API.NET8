@@ -47,6 +47,11 @@ var app = builder.Build();
 
 
     app.UseSwaggerUI();
+    //app.UseSwaggerUI(c =>
+    //{
+    //    c.SwaggerEndpoint("..swagger.json", "HotelListingAPI");
+        
+    //});
 //}
 
 app.UseSerilogRequestLogging();
