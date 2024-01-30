@@ -1,18 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HotelListingAPI.Models.Hotels
 {
-    public class BaseHotelDto
+    public abstract class BaseHotelDto
     {
-        
 
+        [Required]
         public String Name { get; set; }
 
+        [Required]
         public String Address { get; set; }
 
-        public double Rating { get; set; }
+        public double? Rating { get; set; }
 
-        [ForeignKey(nameof(CountryId))]
+        [Required]
+        [Range(1, int.MaxValue)]
         public int CountryId { get; set; }
 
        
