@@ -4,6 +4,7 @@ using HotelListingAPI.Data;
 using HotelListingAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,15 +35,16 @@ builder.Services.AddAutoMapper(typeof(MapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+builder.Services.AddScoped<IHotelsRepository, HotelRepository>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseSerilogRequestLogging();
 
