@@ -1,7 +1,7 @@
 using HotelListingAPI.Configurations;
-using HotelListingAPI.Contracts;
+using HotelListingAPI.Core.Contracts;
 using HotelListingAPI.Data;
-using HotelListingAPI.Repository;
+
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Azure.Identity;
@@ -10,10 +10,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using HotelListingAPI.Middleware;
+using HotelListingAPI.Core.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.OData;
+using HotelListingAPI.Core.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
