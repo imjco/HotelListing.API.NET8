@@ -11,6 +11,8 @@ namespace HotelListingAPI.Models.Users
         [Required]
         public String LastName { get; set; }
 
+
+        public String ContactNumber { get; set; }
        
     }
 

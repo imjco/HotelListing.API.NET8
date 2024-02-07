@@ -10,6 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HotelListingAPI.Middleware;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.OData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +31,6 @@ builder.Services.AddIdentityCore<ApiUser>()
     .AddEntityFrameworkStores<HotelListingDbContext>()
     .AddDefaultTokenProviders();
  
-
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -38,6 +40,28 @@ builder.Services.AddCors(option => {
         "AllowAll", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
         );
 });
+
+builder.Services.AddApiVersioning(option =>
+{
+    option.AssumeDefaultVersionWhenUnspecified = true;
+    option.DefaultApiVersion = new ApiVersion(1, 0);
+    option.ReportApiVersions = true;
+    option.ApiVersionReader = ApiVersionReader.Combine(
+               new HeaderApiVersionReader("X-Version"),
+               new QueryStringApiVersionReader("ver")
+    );
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+
+
+
+
 
 builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
@@ -67,6 +91,18 @@ builder.Services.AddAuthentication(options => {
     };
 });
 
+builder.Services.AddResponseCaching(options => { 
+    
+    options.MaximumBodySize = 1024;
+    options.UseCaseSensitivePaths = true;
+});
+
+builder.Services.AddControllers().AddOData(options =>
+{
+    options.Select().Filter().OrderBy().Expand().Count();
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,11 +114,29 @@ app.UseSwaggerUI();
 
 //}
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseResponseCaching();
+
+app.Use(async (context, next) =>
+{
+    context.Response.GetTypedHeaders().CacheControl = 
+    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+    {
+        Public = true,
+        MaxAge = TimeSpan.FromSeconds(2)
+    };
+    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+    new string[] { "Accept-Encoding" };
+    await next();
+});
+
 
 app.UseAuthentication();
 app.UseAuthorization();

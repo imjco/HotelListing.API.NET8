@@ -12,21 +12,23 @@ using HotelListingAPI.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using HotelListingAPI.Exceptions;
 using HotelListingAPI.Models;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace HotelListingAPI.Controllers
 {
      [Route("api/v{version:ApiVersion}/countries")]
-    //[Route("api/v:{version:ApiVersion}/countries")]
+   // [Route("api/countries")]
     [ApiController]
-    [ApiVersion("1.0", Deprecated = true) ]
-    public class CountriesController : ControllerBase
+    [ApiVersion("2.0")]
+   
+    public class Countriesv2Controller : ControllerBase
     {
        
         private readonly IMapper _mapper;
         private readonly ICountriesRepository _countriesRepository;
         private readonly ILogger<CountriesController> _logger;
 
-        public CountriesController(IMapper mapper, ICountriesRepository countriesRepository, ILogger<CountriesController> logger)
+        public Countriesv2Controller(IMapper mapper, ICountriesRepository countriesRepository, ILogger<CountriesController> logger)
         {
             _countriesRepository = countriesRepository;
             this._logger = logger;
@@ -36,9 +38,11 @@ namespace HotelListingAPI.Controllers
 
         // GET: api/Countries
         [HttpGet("GetAll")]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
         {
 
+            // return me with pagination
             var countries = await _countriesRepository.GetAllAsync();
             var records = _mapper.Map<List<GetCountryDto>>(countries);
             return Ok(records);
@@ -46,6 +50,7 @@ namespace HotelListingAPI.Controllers
 
         // GET: api/Countries/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
+        [EnableQuery]
         public async Task<ActionResult<PagedResult<GetCountryDto>>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
         {
 
@@ -53,6 +58,7 @@ namespace HotelListingAPI.Controllers
             var pagedCountriesResult = await _countriesRepository.GetAllAsync<GetCountryDto>(queryParameters);
             return Ok(pagedCountriesResult);
         }
+
 
         // GET: api/Countries/5
         [HttpGet("{id}")]

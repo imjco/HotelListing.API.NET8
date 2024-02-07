@@ -1,5 +1,6 @@
 ﻿using HotelListingAPI.Contracts;
 using HotelListingAPI.Models.Users;
+using HotelListingAPI.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,11 @@ namespace HotelListingAPI.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAuthManager _authManager;
-
-        public AccountController(IAuthManager authManager)
+        private readonly ILogger<AccountController> _logger;
+        public AccountController(IAuthManager authManager, ILogger<AccountController> logger)
         {
             this._authManager = authManager;
+            this._logger = logger;
         }
 
         //api/account/register
@@ -24,15 +26,21 @@ namespace HotelListingAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Register([FromBody] ApiUserDto apiUserDto)
         {
-            var errors = await _authManager.Register(apiUserDto);
-            if ( errors.Any())
-            {
-                foreach (var error in errors){
-                       ModelState.AddModelError(error.Code, error.Description);
+           
+                  var errors = await _authManager.Register(apiUserDto);
+                if (errors.Any())
+                {
+                    foreach (var error in errors)
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);
+                    }
+                    return BadRequest(ModelState);
                 }
-                return BadRequest(ModelState);
-            }
-            return Ok();
+                return Ok();
+           
+
+
+            
         }
 
 
@@ -47,12 +55,16 @@ namespace HotelListingAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var authResponse = await _authManager.Login(loginDto);
-            if (authResponse == null)
-            {
-                return Unauthorized();
-            }
-            return Ok(authResponse);
+           
+
+                var authResponse = await _authManager.Login(loginDto);
+                if (authResponse == null)
+                {
+                    return Unauthorized();
+                }
+                return Ok(authResponse);
+
+
             
         }
 
@@ -67,12 +79,17 @@ namespace HotelListingAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> RefreshToken([FromBody] AuthResponseDto request)
         {
-            var authResponse = await _authManager.VerifyRefreshToken(request);
-            if (authResponse == null)
-            {
-                return Unauthorized();
-            }
-            return Ok(authResponse);
+          
+                var authResponse = await _authManager.VerifyRefreshToken(request);
+                if (authResponse == null)
+                {
+                    return Unauthorized();
+                }
+                return Ok(authResponse);
+         
+
+
+            
 
         }
 
