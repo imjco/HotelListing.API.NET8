@@ -150,13 +150,13 @@ builder.Services.AddControllers().AddOData(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{ 
+if (app.Environment.IsDevelopment())
+{ 
 app.UseSwagger();
 
 app.UseSwaggerUI();
 
-//}
+}
 
 app.MapHealthChecks("/healthcheck", new HealthCheckOptions {
     Predicate = heatlhcheck => heatlhcheck.Tags.Contains("custom"),
