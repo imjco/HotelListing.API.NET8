@@ -39,9 +39,8 @@ namespace HotelListingAPI.Controllers
         public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
         {
 
-            var countries = await _countriesRepository.GetAllAsync();
-            var records = _mapper.Map<List<GetCountryDto>>(countries);
-            return Ok(records);
+            var countries = await _countriesRepository.GetAllAsync<GetCountryDto>();
+            return Ok(countries);
         }
 
         // GET: api/Countries/?StartIndex=0&PageSize=25&PageNumber=1
@@ -60,15 +59,7 @@ namespace HotelListingAPI.Controllers
         {
 
             var country = await _countriesRepository.GetDetails(id);
-
-            if (country == null)
-            {
-                throw new NotFoundExcemption(nameof(country), id);
-                //return NotFound();
-            }
-            var countryDto = _mapper.Map<CountryDto>(country);
-
-            return Ok(countryDto);
+            return Ok(country);
         }
 
         // PUT: api/Countries/5
@@ -81,21 +72,9 @@ namespace HotelListingAPI.Controllers
             {
                 return BadRequest("invalid record id");
             }
-
-            var country = await _countriesRepository.GetAsync(id);
-            if (country == null)
+           try
             {
-                throw new NotFoundExcemption(nameof(country), id);
-                //return NotFound();
-            }
-
-            _mapper.Map(updateCountryDto, country);
-
-
-
-            try
-            {
-                await _countriesRepository.UpdateAsync(country);
+                await _countriesRepository.UpdateAsync(id, updateCountryDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -118,11 +97,8 @@ namespace HotelListingAPI.Controllers
         [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CreateCountryDto createCountryDto)
         {
-           var country = _mapper.Map<Country>(createCountryDto);
-
-           await  _countriesRepository.AddAsync(country);
-           
-           return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+          var country = await  _countriesRepository.AddAsync<CreateCountryDto, GetCountryDto>(createCountryDto);
+          return CreatedAtAction(nameof(GetCountry), new { id = country.Id }, country);
         }
 
         // DELETE: api/Countries/5
@@ -130,14 +106,7 @@ namespace HotelListingAPI.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteCountry(int id)
         {
-            var country = await _countriesRepository.GetAsync(id);
-            if (country == null)
-            {
-                throw new NotFoundExcemption(nameof(country), id);
-                // return NotFound();
-            }
-
-          await _countriesRepository.DeleteAsync(country.Id);
+          await _countriesRepository.DeleteAsync(id);
 
           return NoContent();
         }

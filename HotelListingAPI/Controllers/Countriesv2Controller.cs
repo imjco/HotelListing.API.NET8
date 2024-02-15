@@ -69,7 +69,7 @@ namespace HotelListingAPI.Controllers
 
             if (country == null)
             {
-                throw new NotFoundExcemption(nameof(country), id);
+                throw new NotFoundException(nameof(country), id);
                 //return NotFound();
             }
             var countryDto = _mapper.Map<CountryDto>(country);
@@ -91,7 +91,7 @@ namespace HotelListingAPI.Controllers
             var country = await _countriesRepository.GetAsync(id);
             if (country == null)
             {
-                throw new NotFoundExcemption(nameof(country), id);
+                throw new NotFoundException(nameof(country), id);
                 //return NotFound();
             }
 
@@ -139,7 +139,7 @@ namespace HotelListingAPI.Controllers
             var country = await _countriesRepository.GetAsync(id);
             if (country == null)
             {
-                throw new NotFoundExcemption(nameof(country), id);
+                throw new NotFoundException(nameof(country), id);
                 // return NotFound();
             }
 

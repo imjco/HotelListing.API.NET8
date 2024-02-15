@@ -4,6 +4,7 @@ using HotelListingAPI.Core.Contracts;
 using HotelListingAPI.Data;
 using HotelListingAPI.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using HotelListingAPI.Core.Exceptions;
 
 namespace HotelListingAPI.Core.Repository
 {
@@ -32,9 +33,22 @@ namespace HotelListingAPI.Core.Repository
 
         }
 
+        public async Task<TResult> AddAsync<TSource, TResult>(TSource source)
+        {
+           var entiry = _mapper.Map<T>(source);
+            await _context.AddAsync(entiry);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<TResult>(entiry);
+        }
+
         public async Task DeleteAsync(int id)
         {
             var entity = await GetAsync(id);
+            if (entity is null)
+            {
+                throw new NotFoundException(typeof(T).Name, id);
+            }
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
         }
@@ -47,7 +61,9 @@ namespace HotelListingAPI.Core.Repository
 
         public async Task<IList<T>> GetAllAsync()
         {
-           return await _context.Set<T>().ToListAsync();
+           return await _context.Set<T>()
+                .ProjectTo<T>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<PagedResult<TResult>> GetAllAsync<TResult>(QueryParameters queryParameters)
@@ -67,6 +83,13 @@ namespace HotelListingAPI.Core.Repository
             };
         }
 
+        public async Task<List<TResult>> GetAllAsync<TResult>()
+        {
+            return await _context.Set<T>()
+                .ProjectTo<TResult>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<T> GetAsync(int? id)
         {
             if(id == null)
@@ -78,12 +101,35 @@ namespace HotelListingAPI.Core.Repository
 
         }
 
+        public async Task<TResult> GetAsync<TResult>(int? id)
+        {
+            var result = await _context.Set<T>().FindAsync(id);
+            if (result == null)
+            {
+                throw new NotFoundException(typeof(T).Name, id.HasValue ? id : "No Key Provided");
+            }
+            
+            return _mapper.Map<TResult>(result);
+        }
+
         public async Task UpdateAsync(T entity)
         {
            _context.Update(entity);
             await _context.SaveChangesAsync();
 
 
+        }
+
+        public async Task UpdateAsync<TSource>(int id, TSource source)
+        {
+            var entity = await GetAsync(id);
+            if (entity is null)
+            {
+                throw new NotFoundException(typeof(T).Name, id);
+            }
+            _mapper.Map(source, entity);
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

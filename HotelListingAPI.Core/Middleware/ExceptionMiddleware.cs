@@ -42,7 +42,7 @@ namespace HotelListingAPI.Core.Middleware
 
             switch(ex)
             {
-                case NotFoundExcemption notFoundExcemption:
+                case NotFoundException notFoundException:
                     statusCode = HttpStatusCode.NotFound;
                     errorDetails.ErrorType = "Not Found";
                     break;
