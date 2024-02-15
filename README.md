@@ -15,6 +15,7 @@ Web API using ASP.NET Core, Entity Framework and Enterprise Level Design Pattern
 - Using Microsoft Azure SQL
 - API Versioning
 - API Caching
+- Use Migrations and Seeders
 
 ## Tech Stack
 
